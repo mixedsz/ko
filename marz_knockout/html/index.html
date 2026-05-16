@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Knockout Sound</title>
+    <script src="nui://game/ui/jquery.js" type="text/javascript"></script>
+    <script>
+        // Listen for NUI messages from the client script
+        window.addEventListener('message', function(event) {
+            let data = event.data;
+            
+            // Handle sound playing
+            if (data.transactionType === 'playSound') {
+                let sound = new Audio(`../sounds/${data.transactionFile}.ogg`);
+                sound.volume = data.transactionVolume;
+                sound.play();
+                console.log("Playing sound: " + data.transactionFile);
+            }
+        });
+    </script>
+</head>
+<body>
+    <!-- No visible content needed, just handles the audio playback -->
+</body>
+</html>
