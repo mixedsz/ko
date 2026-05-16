@@ -189,9 +189,19 @@ local function wakeUp()
     
     -- Clear all damage flags to prevent any lingering damage detection
     clearAllDamageFlags()
-    
-    -- No longer setting health back to original value - let player keep whatever health they have
-    
+
+    -- Restore health to full so the player doesn't die from a single punch after waking up.
+    -- At minimum, push them well above the knockout threshold.
+    local maxHealth = GetEntityMaxHealth(ped)
+    local knockoutThreshold = Config.Health or 120
+    local minSafeHealth = knockoutThreshold + 30
+    local targetHealth = math.max(maxHealth, minSafeHealth)
+    SetEntityHealth(ped, targetHealth)
+
+    if Config.ServerHealthSync then
+        TriggerServerEvent('marzknockout:syncHealth', targetHealth)
+    end
+
     if HasAnimDictLoaded(Config.Animations.WakeUp) then
         TaskPlayAnim(ped, Config.Animations.WakeUp, "b_getup_f_facedown_01", 8.0, -8.0, -1, 0, 0, false, false, false)
     end
